@@ -14,6 +14,7 @@ const release = "v0.0.1"
 
 const (
 	contextPackage = protogen.GoImportPath("context")
+	grpcPackage    = protogen.GoImportPath("google.golang.org/grpc")
 )
 
 // generateFile generates a _http.pb.go file containing kratos errors definitions.
@@ -47,7 +48,7 @@ func generateFileContent(gen *protogen.Plugin, file *protogen.File, g *protogen.
 	g.P("// This is a compile-time assertion to ensure that this generated file")
 	g.P("// is compatible with the kratos package it is being compiled against.")
 	g.P("var _ = new(", contextPackage.Ident("Context"), ")")
-	//g.P("var _ = ", bindingPackage.Ident("EncodeURL"))
+	g.P("var _ = ", grpcPackage.Ident("Version"))
 	//g.P("const _ = ", transportHTTPPackage.Ident("SupportPackageIsVersion1"))
 	g.P()
 

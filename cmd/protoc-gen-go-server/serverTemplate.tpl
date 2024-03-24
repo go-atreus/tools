@@ -5,8 +5,8 @@ type {{.ServiceType}}Impl struct{
 	cc {{.ServiceType}}Client
 }
 
-func New{{.ServiceType}}Impl (client {{.ServiceType}}Client) *{{.ServiceType}}Impl {
-	return &{{.ServiceType}}Impl{client}
+func New{{.ServiceType}}Impl (conn *grpc.ClientConn) *{{.ServiceType}}Impl {
+	return &{{.ServiceType}}Impl{cc: New{{.ServiceType}}Client(conn)}
 }
 
 {{range .Methods}}
