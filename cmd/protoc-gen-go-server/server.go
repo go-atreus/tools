@@ -19,7 +19,7 @@ const (
 
 // generateFile generates a _http.pb.go file containing kratos errors definitions.
 func generateFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
-	if len(file.Services) == 0 {
+	if len(file.Services) == 0 || (!hasHTTPRule(file.Services)) {
 		return nil
 	}
 	filename := file.GeneratedFilenamePrefix + "_server.pb.go"
@@ -38,6 +38,21 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	g.P()
 	generateFileContent(gen, file, g)
 	return g
+}
+
+func hasHTTPRule(services []*protogen.Service) bool {
+	for _, service := range services {
+		for _, method := range service.Methods {
+			if method.Desc.IsStreamingClient() || method.Desc.IsStreamingServer() {
+				continue
+			}
+			rule, ok := proto.GetExtension(method.Desc.Options(), annotations.E_Http).(*annotations.HttpRule)
+			if rule != nil && ok {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // generateFileContent generates the kratos errors definitions, excluding the package statement.
